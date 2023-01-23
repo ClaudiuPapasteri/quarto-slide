@@ -1,0 +1,307 @@
+---
+title: "quarto-slide"
+author: "Claudiu Papasteri"
+subtitle: Long subtitle for test
+# footer: unibuc.ro
+# logo: images/logo.png
+editor: visual
+execute:
+  eval: true
+  echo: true
+  warning: true
+  error: true   
+format:
+  revealjs:
+    code-copy: hover
+    code-overflow: scroll
+    multiplex: false
+    embed-resources: false
+    controls: auto
+    progress: true
+    history: true
+    hash-type: number    
+    slide-number: c/t
+    show-slide-number: print  
+    menu:
+      side: right
+      width: normal
+      numbers: true
+    chalkboard:
+      theme: chalkboard
+      src: drawings.json
+      read-only: false
+title-slide-attributes:
+  data-background-image: images/logo.png
+  data-background-opacity: "0.5"
+  data-background-size: 15%
+  data-background-position: 2% 2%
+  # data-background-image: grid-worms/bird.webp
+  # background-iframe: grid-worms/index.html
+preload-iframes: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+# General R options
+set.seed(111)               # in case we use randomized procedures       
+options(scipen = 999)       # positive values bias towards fixed and negative towards scientific notation
+options(repos = 
+  c(getOption("repos")["CRAN"],
+  CRANextra = "https://mirror.clientvps.com/CRAN/")
+) # use CRAN as default, set CRANextra to Nürnberg mirror
+
+# Load packages
+if (!require("pacman")) install.packages("pacman", dependencies = TRUE)
+packages <- c(
+  "papaja",
+  "here", "fs",
+  "conflicted",
+  "rio",
+  "tidyverse", 
+  "psych",          
+  "rstatix", "ggstatsplot",
+  "ggplot2", "ggpubr", "scales",
+  "report",
+  # , ...
+  "plotly", "crosstalk", "DT",
+  # for examples:
+  "htmltools",
+  "palmerpenguins",
+  "d3scatter"
+)
+pacman::p_load(char = packages)
+
+# Set here to Rnotebook directory
+here::set_here()
+unloadNamespace("here")                   # need new R session or unload namespace for .here file to take precedence over .Rproj
+notebook_name <- fs::path_file(here::here())
+
+# Solve conflicts in favor of tidyverse
+conflicted::conflict_prefer("filter", winner = "dplyr")
+conflicted::conflict_prefer("select", winner = "dplyr")
+conflicted::conflict_prefer("slice", winner = "dplyr")
+conflicted::conflict_prefer("rename", winner = "dplyr")
+conflicted::conflict_prefer("count", winner = "dplyr")
+
+# Themes for ggplot2 plotting (here used APA style)
+theme_set(papaja::theme_apa())
+```
+
+## Presentations and Video
+
+Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>. See example [presentation](https://quarto.org/docs/presentations/revealjs/) and [source code for the qmd](https://github.com/quarto-dev/quarto-web/blob/main/docs/presentations/revealjs/demo/index.qmd).
+
+<br/> {{< video https://www.youtube.com/embed/YVa5cdkypbw height="300" width="600" >}}
+
+## Quarto Extensions - FA icons & QR
+
+::: r-fit-text
+Install the following extensions (in <span style="color:cyan;">_extensions</span> folder, on Win 11 path is `C:\Users\username\Documents\_extensions`):
+
+-   https://github.com/quarto-ext/fontawesome
+
+    -   `quarto install extension quarto-ext/fontawesome`
+
+-   https://github.com/jmbuhr/quarto-qrcode
+
+    -   `quarto install extension jmbuhr/quarto-qrcode`
+
+Then if you want to use them within a project, you need to add them:
+
+-   `quarto add quarto-ext/fontawesome` 
+
+-   `quarto add jmbuhr/quarto-qrcode`.
+:::
+
+## Use FA icons & QR Extensions
+
+::: columns
+::: {.column width="50%"}
+<br/> {{< fa thumbs-up size=2xl >}}
+
+<br/> {{< qrcode https://jmbuhr.de qr1 width=300 height=300 colorDark='#0011bb' >}}
+:::
+
+::: {.column width="50%"}
+Download files: <br> <i class="fas fa-file-pdf"></i> <a href="/res/empty.pdf" download>Pdf file</a> <br> <i class="fas fa-file-word"></i> <a href="/res/empty.docx" download>Word file</a>
+:::
+:::
+
+## Bullets & Incremental lists
+
+When you click the **Render** button a document will be generated that includes:
+
+-   Content authored with markdown
+-   Output from executable code
+
+::: incremental
+-   Incremental 1
+-   Incremental 2
+:::
+
+::: aside
+Some additional commentary of more peripheral interest.
+:::
+
+## Code Line Highlighting
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+#| label: code
+#| code-line-numbers: "2-4|7-9|10-11"
+
+penguins <- tidyr::drop_na(palmerpenguins::penguins)
+plt <- ggbetweenstats(data = penguins, x = species, y = bill_length_mm) + 
+  labs(x = "Penguins Species", y = "Bill Length", 
+       title = "Distrib. of bill length across species") + 
+  theme(
+    text = element_text(family = "Lato", size = 8, color = "black"),
+    plot.title = element_text(family = "Lato", size = 20, face = "bold", color = "#2a475e"),
+    plot.subtitle = element_text(family = "Lato", size = 15, face = "bold", color="#1b2838"),
+    plot.title.position = "plot", 
+    axis.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(size = 12)
+  )
+```
+
+## Plot
+
+```{r}
+#| label: plot
+#| echo: false
+#| warning: false
+#| cache: true
+#| fig-link: https://r-graph-gallery.com/web-violinplot-with-ggstatsplot.html
+
+plt
+```
+
+## Animations
+
+::: {.fragment .fade-in}
+::: {.fragment .highlight-red}
+::: {.fragment .semi-fade-out}
+Fade in \> Turn red \> Semi fade out
+:::
+:::
+:::
+
+## Images and animations
+
+&nbsp;
+![](images/1_large.png){.fragment .r-stretch .grow width="55%" height="55%"} 
+&nbsp;
+
+## Images and animations
+
+::: columns
+::: {.column width="33%"}
+![](images/2_medium.png){.fragment .r-stretch .fade-in}
+:::
+
+::: {.column width="33%"}
+![](images/3_medium.png){.fragment .r-stretch .fade-in}
+:::
+
+::: {.column width="33%"}
+![](images/4_medium.png){.fragment .r-stretch .fade-in}
+:::
+:::
+
+## Callout notes
+
+::: callout-note
+Note that there are five types of callouts, including: `note`, `warning`, `important`, `tip`, and `caution`.
+:::
+
+::: callout-tip
+## Tip With Caption
+
+This is an example of a callout with a caption.
+:::
+
+::: {.callout-caution collapse="true"}
+## Expand To Learn About Collapse
+
+This is an example of a 'folded' caution callout that can be expanded by the user. You can use `collapse="true"` to collapse it by default or `collapse="false"` to make a collapsible callout that is expanded by default.
+:::
+
+## Interactive - Plotly {.smaller}
+
+```{r}
+#| label: interactive
+#| echo: false
+
+# example from https://github.com/jthomasmock/penguin-project/blob/master/02-data-products/crosstalk.rmd
+
+small_df <- palmerpenguins::penguins %>% 
+  select(species, sex, flipper_length_mm, body_mass_g) %>% 
+  na.omit()
+
+pen_df <- SharedData$new(small_df)
+
+x <- list(title = "Flipper Length (mm)", range = c(170, 240))
+y <- list(title = "Body Mass (g)", range = c(2500, 6500))
+
+plotly_graphic <- plot_ly(pen_df, 
+                          x = ~flipper_length_mm, 
+                          y = ~body_mass_g, 
+                          color = ~species,
+                          text = ~species) %>% 
+  add_markers() %>% 
+  plotly::layout(
+    xaxis = ~x, 
+    yaxis = ~y
+  ) %>%
+  highlight(
+    on = "plotly_selected", 
+    off = "plotly_doubleclick", 
+    persistent = FALSE
+  ) %>% 
+  plotly::config(displaylogo = FALSE)
+
+suppressWarnings({
+  crosstalk::bscols(
+    widths = c(1, 3, 8),
+    htmltools::div(),     # the filters get clipped, this is a hacky way to solve it
+    list(
+        filter_checkbox("sex", "Sex", pen_df, ~sex),
+        filter_checkbox("species", "Species", pen_df, ~species),
+        filter_slider("mass", "Body Mass (g)", pen_df, ~body_mass_g)
+    ),
+    plotly_graphic 
+  )
+})
+```
+
+## Interactive - d3scatter {.smaller}
+
+```{r}
+#| label: interactive2
+#| code-fold: true
+#| code-summary: "click to expand code"
+
+# if(!require(d3scatter)){devtools::install_github("jcheng5/d3scatter")}; library(d3scatter)
+
+shared_mtcars <- crosstalk::SharedData$new(mtcars)
+
+crosstalk::bscols(widths = c(3, NA, NA),
+  list(
+    filter_checkbox("cyl", "Cylinders", shared_mtcars, ~cyl, inline = TRUE),
+    filter_slider("hp", "Horsepower", shared_mtcars, ~hp, width = "100%"),
+    filter_select("auto", "Automatic", shared_mtcars, ~ifelse(am == 0, "Yes", "No"))
+  ),
+  d3scatter::d3scatter(shared_mtcars, ~wt, ~mpg, ~factor(cyl), width = "100%", height = 250),
+  d3scatter::d3scatter(shared_mtcars, ~hp, ~qsec, ~factor(cyl), width = "100%", height = 250)
+)
+```
+
+
+```{=html}
+<!-- 
+# {background-iframe="grid-worms/index.html"} 
+Background for title slide, not working in this version of Quarto -->
+```
